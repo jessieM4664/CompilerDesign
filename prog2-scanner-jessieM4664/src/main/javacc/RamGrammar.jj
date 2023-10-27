@@ -1,0 +1,178 @@
+
+options {
+  JAVA_UNICODE_ESCAPE = true;
+  DEBUG_PARSER = false;
+  STATIC = false;
+}
+
+PARSER_BEGIN(RamParser)
+    package compilers;
+    import java.io.FileNotFoundException;
+
+    public class RamParser {
+        public static void main(String[] args) 
+        throws ParseException, TokenMgrError, FileNotFoundException
+        {
+            if (args.length == 0) {
+                RamParser parser = new RamParser( System.in ) ;
+                parser.Goal();
+            } else {
+                java.io.InputStream is = new java.io.FileInputStream(new java.io.File(args[0]));
+                RamParser parser = new RamParser( is ) ;
+                parser.Goal();
+            }       
+        }
+    }
+PARSER_END(RamParser)
+
+
+// Insert a specification of a lexical analysis here. 
+
+/* The regular expressions here will be skipped during lexical analysis. No
+tokens are constructed from the productions that are defined here. */
+SKIP : {
+
+  <WHITESPACE: (" " | "\t" | "\n" | "\r" )>
+
+}
+
+
+/* Insert the regular expressions for comments here. Special tokens do not
+interact in the parsing process, but can be accessed from the parser. */
+SPECIAL_TOKEN: {
+  < COMMENT: "//" (~["\n"])* ("\n"|"\r"|"\r\n") >
+| <MULTI_COMMENT: "/*" (~["*"])* "*"(~["/"] (~["*"])* "*")* "/" >
+}
+
+
+
+/* For the regular expressions on the right, the token on the left
+will be returned */
+TOKEN : {
+
+  < IF: "if" >
+| < WHILE: "while" >
+| < ELSE: "else" >
+| < FOR: "for" >
+
+| < LPAREN: "(" >
+| < RPAREN: ")" >
+| < LCURLY: "{" >
+| < RCURLY: "}" >
+| < LBRACKET: "[" >
+| < RBRACKET: "]" >
+
+| < PLUS: "+" >
+| < MINUS: "-" >
+| < MULT: "*" >
+| < EQUAL: "=" >
+| < PLUSEQ: "+=">
+| < MINUSEQ: "-=" >
+
+| < AND: "and" >
+| < OR: "or" >
+| < EQUALITY: "eq" >
+| < GREAT_THAN: ">" >
+| < LESS_THAN: "<" >
+| < NOT_EQUAL: "ne" >
+| < GREATEREQ: "ge" >
+| < LESSEQ: "le" >
+
+| < PRINTLN: "println" >
+| < PRINT: "print" >
+| < TRUE: "true" >
+| < FALSE: "false" >
+| < CLASS: "class" >
+| < PUBLIC: "public" >
+| < STATIC: "static" >
+| < VOID: "void" >
+| < MAIN: "main" >
+| < NEW: "new" >
+| < DOT: "." >
+| < COMMA: "," >
+| < SEMI: ";" >
+
+| < INT: "integer" >
+| < BOOLEAN: "bool" >
+| < STRING: "String" >
+| < ID: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","_","0"-"9"] )* >
+| < INTEGER: ("-")? ("0" | ["1"-"9"](["0"-"9"])*) >
+}
+
+
+
+// The following is a simple grammar that will allow you
+// to test the generated lexer.
+void Goal() :
+{}
+{
+
+/*
+  ( RamToken() )* <EOF>
+*/
+
+
+  ( RamToken() {System.out.println("<" + token.kind + " , " + token.image + ">");} )*
+
+
+/*
+  ( RamToken() {System.out.println("Kind: " + token.kind + " line "
+  + token.beginLine + ", column " + token.beginColumn + " - line " +
+  token.endLine + ", column " + token.endColumn + " : " + token.image);} )*
+  <EOF>
+*/
+
+/*
+  ( RamToken() {System.out.println("Kind: " + token.kind + " line "
+  + token.beginLine + ", column " + token.beginColumn + " - line " +
+  token.endLine + ", column " + token.endColumn + " : " + token.image +
+  " " + token.specialToken);} )*
+  <EOF>
+*/
+}
+
+void RamToken():
+{}
+{
+  <IF>
+  | <WHILE>
+  | <ELSE>
+  | <FOR>
+  |  <LPAREN>
+  | <RPAREN>
+  | <LCURLY>
+  | <RCURLY>
+  | <LBRACKET>
+  | <RBRACKET>
+  | <PLUS>
+  | <MINUS>
+  | <MULT>
+  | <EQUAL>
+  | <PLUSEQ>
+  | <MINUSEQ>
+  | <AND>
+  | <OR>
+  | <EQUALITY>
+  | <GREAT_THAN>
+  | <LESS_THAN>
+  | <NOT_EQUAL>
+  | <GREATEREQ>
+  | <LESSEQ>
+  | <PRINTLN>
+  | <PRINT>
+  | <TRUE>
+  | <FALSE>
+  | <CLASS>
+  | <PUBLIC>
+  | <STATIC>
+  | <VOID>
+  | <MAIN>
+  | <NEW>
+  | <DOT>
+  | <SEMI>
+  | <INT>
+  | <BOOLEAN>
+  | <ID>
+  | <INTEGER>
+  | <STRING>
+}
